@@ -75,46 +75,67 @@ namespace ToDoAPI.Controllers
 			return BadRequest();
 		}
 
-		//========================== Update action ================================
+        //========================== Update action ================================
 
-		//[HttpPut("{id}")]
-		//public IActionResult UpdateToDoItem(int id, [FromBody] ToDo updatedToDo)
-		//{
-		//	var existingToDo = _dbContext.todos.Find(id);
+        //[HttpPut("id")]
+        //public IActionResult UpdateToDoItem(int id, [FromBody] ToDo updatedToDo)
+        //{
+        //	var existingToDo = _dbContext.todos.Find(id);
 
-		//	if (existingToDo == null)
-		//	{
-		//		return NotFound();
-		//	}
+        //	if (existingToDo == null)
+        //	{
+        //		return NotFound();
+        //	}
 
-		//	// Update properties of existingToDo with values from updatedToDo
-		//	existingToDo.Name = updatedToDo.Name;
-		//	existingToDo.Description = updatedToDo.Description;
-		//	existingToDo.CreatedDate = updatedToDo.CreatedDate;
+        //	// Update properties of existingToDo with values from updatedToDo
+        //	existingToDo.Name = updatedToDo.Name;
+        //	existingToDo.Description = updatedToDo.Description;
+        //	existingToDo.CreatedDate = updatedToDo.CreatedDate;
 
-		//	_dbContext.SaveChanges();
+        //	_dbContext.SaveChanges();
 
-		//	return Ok(existingToDo);
-		//}
+        //	return Ok(existingToDo);
+        //}
+        //===============================================================
+        [HttpPut("{id}")]
+        public IActionResult UpdateToDoItem(int id, [FromBody] ToDo updatedToDo)
+        {
+            var existingToDo = _dbContext.todos.Find(id);
 
-		//========================== Delete action =============================
-		//[HttpDelete("{id}")]
-		//public IActionResult DeleteToDoItem(int id)
-		//{
-		//	var toDoItem = _dbContext.todos.Find(id);
+            if (existingToDo == null)
+            {
+                return NotFound();
+            }
 
-		//	if (toDoItem == null)
-		//	{
-		//		return NotFound();
-		//	}
+            // Use EntityEntry to track changes
+            var entry = _dbContext.Entry(existingToDo);
 
-		//	_dbContext.todos.Remove(toDoItem);
-		//	_dbContext.SaveChanges();
+            // Update properties of existingToDo with values from updatedToDo
+            entry.CurrentValues.SetValues(updatedToDo);
 
-		//	return NoContent();
-		//}
+            _dbContext.SaveChanges();
+
+            return Ok(existingToDo);
+        }
+
+        //========================== Delete action =============================
+        [HttpDelete("{id}")]
+        public IActionResult DeleteToDoItem(int id)
+        {
+            var toDoItem = _dbContext.todos.Find(id);
+
+            if (toDoItem == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.todos.Remove(toDoItem);
+            _dbContext.SaveChanges();
+
+            return NoContent();
+        }
 
 
 
-	}
+    }
 }
